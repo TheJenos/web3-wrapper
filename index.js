@@ -71,6 +71,6 @@ class ${args[0]}Wrapper {
 
 export default ${args[0]}Wrapper
 `
-    fs.writeFileSync(args[1],finalOut)
+    fs.writeFileSync(path.join(args[1],`${args[0]}Wrapper.js`),finalOut)
 })
 

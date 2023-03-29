@@ -1,6 +1,6 @@
 {
-  "name": "web3-wrapper",
-  "version": "1.0.0",
+  "name": "web3-js-wrapper",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
