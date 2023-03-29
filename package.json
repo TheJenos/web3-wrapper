@@ -1,6 +1,6 @@
 {
   "name": "web3-js-wrapper",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "this package generate wrapper for your contract object from ABI",
   "main": "index.js",
   "scripts": {

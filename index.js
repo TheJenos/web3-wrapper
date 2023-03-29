@@ -12,7 +12,7 @@ if (args.length < 1) {
     process.exit(1);
 }
 
-glob(path.join(currentDir,'**',`${args[0]}.sol`,`${args[0]}.json`), null, function (er, files) {
+glob(`**/${args[0]}.sol/${args[0]}.json`, null, function (er, files) {
     if (files.length > 1) {
         console.error('There are multiple contract files');
         process.exit(1);
@@ -30,7 +30,6 @@ class ${args[0]}Wrapper {
         this.contract = new ethers.Contract(contractAddress, contractAbi, signer);
     }
     `
-
     const contractJson = JSON.parse(fs.readFileSync(files[0]))
     const functionData = contractJson.abi.filter(x => x.type == 'function' && ["nonpayable","view","payable"].includes(x.stateMutability))
 
@@ -73,4 +72,3 @@ export default ${args[0]}Wrapper
 `
     fs.writeFileSync(path.join(args[1],`${args[0]}Wrapper.js`),finalOut)
 })
-
