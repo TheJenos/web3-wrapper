@@ -10,7 +10,7 @@
   "bin": {
     "web3-js-structure": "index.js"
   },
-  "author": "",
+  "author": "nadunnew@gmail.com",
   "license": "ISC",
   "dependencies": {
     "glob": "^8.0.3"
