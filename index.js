@@ -12,7 +12,7 @@ if (args.length < 1) {
     process.exit(1);
 }
 
-glob(path.join(currentDir,"**",`${args[0]}.sol`,`${args[0]}.json`), null, function (er, files) {
+glob(path.join(currentDir,'**',`${args[0]}.sol`,`${args[0]}.json`), null, function (er, files) {
     if (files.length > 1) {
         console.error('There are multiple contract files');
         process.exit(1);
