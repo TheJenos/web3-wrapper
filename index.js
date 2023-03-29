@@ -31,7 +31,7 @@ class ${args[0]}Wrapper {
     }
     `
 
-    const contractJson = require(files[0]);
+    const contractJson = JSON.parse(fs.readFileSync(files[0]))
     const functionData = contractJson.abi.filter(x => x.type == 'function' && ["nonpayable","view","payable"].includes(x.stateMutability))
 
     for (const functionInfo of functionData) {
