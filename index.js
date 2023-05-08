@@ -51,11 +51,12 @@ class ${args[0]}Wrapper {
             const bgNumber = BigNumber.from(data)
 
             if (bgNumber.gt(BigNumber.from(10).pow(10))) {
-                return ethers.utils.formatEther(bgNumber);
+                return parseFloat(ethers.utils.formatEther(bgNumber));
             }
 
             return bgNumber.toNumber()
         }
+        
         if (data instanceof Object) {
             const allData = {}
             for (const key in data) {
@@ -64,6 +65,11 @@ class ${args[0]}Wrapper {
             }
             return allData
         }
+        
+        if (typeof(data) == 'string' && data.startsWith("0x")) {
+            return data.toLowerCase();
+        }
+
         return data
     }
 }
