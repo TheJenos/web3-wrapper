@@ -22,24 +22,28 @@ glob(`**/${args[0]}.sol/${args[0]}.json`, null, function (er, files) {
     }
 
     let finalOut = `
-import { ethers, BigNumber } from 'ethers';
+import { formatEther, Contract } from 'ethers';
 
 class ${args[0]}Wrapper {
 
     constructor(contractAddress, contractAbi, signer) {
-        this.contract = new ethers.Contract(contractAddress, contractAbi, signer);
+        this.contract = new Contract(contractAddress, contractAbi, signer);
     }
     `
     const contractJson = JSON.parse(fs.readFileSync(files[0]))
-    const functionData = contractJson.abi.filter(x => x.type == 'function' && ["nonpayable","view","payable"].includes(x.stateMutability))
+    const functionData = contractJson.abi.filter(x => x.type == 'function' && ["nonpayable","view","payable","pure"].includes(x.stateMutability))
 
     for (const functionInfo of functionData) {
-        const paraData =  functionInfo.inputs.map((x,index) => x.name.length ? x.name:`para${index}`).join(', ');
+        const paraData =  functionInfo.inputs.map((x,index) => x.name.length ? x.name:`para${index}`);
 
         const haveOption = functionInfo.stateMutability == "payable"
 
+        if (haveOption) {
+            paraData.push('option')
+        }
+
         finalOut += `
-    async ${functionInfo.name}(${paraData}${haveOption?',option':''}) {
+    async ${functionInfo.name}(${paraData.join(', ')}) {
         return this.convertData(await this.contract.${functionInfo.name}(${paraData}${haveOption?',option':''}))
     }
         `
@@ -47,17 +51,19 @@ class ${args[0]}Wrapper {
 
     finalOut += `
     convertData(data) {
-        if (data instanceof BigNumber) {
-            const bgNumber = BigNumber.from(data)
-
-            if (bgNumber.gt(BigNumber.from(10).pow(10))) {
-                return parseFloat(ethers.utils.formatEther(bgNumber));
+        if (typeof data == 'bigint') {
+            if (data > 10000000000n) {
+                return formatEther(data);
             }
-
-            return bgNumber.toNumber()
+            return Number(data)
         }
-        
-        if (data instanceof Object) {
+        if (data instanceof Object && typeof data.length == 'number') {
+            const allData = []
+            for (const key of data) {
+                allData.push(this.convertData(key))
+            }
+            return allData
+        } else if (data instanceof Object) {
             const allData = {}
             for (const key in data) {
                 if (!(parseInt(key) > -1))
@@ -65,11 +71,6 @@ class ${args[0]}Wrapper {
             }
             return allData
         }
-        
-        if (typeof(data) == 'string' && data.startsWith("0x")) {
-            return data.toLowerCase();
-        }
-
         return data
     }
 }
