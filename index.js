@@ -44,7 +44,7 @@ class ${args[0]}Wrapper {
 
         finalOut += `
     async ${functionInfo.name}(${paraData.join(', ')}) {
-        return this.convertData(await this.contract.${functionInfo.name}(${paraData}${haveOption?',option':''}))
+        return this.convertData(await this.contract.${functionInfo.name}(${paraData.join(', ')}))
     }
         `
     }
